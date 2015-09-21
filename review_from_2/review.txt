@@ -1,0 +1,25 @@
+These are my comments while reading your report:
+
+You should reason and write about why the jki loop order gives the best
+performance.  The comparison plot is good, but does it makes sense given
+what we have learned about memory access?
+
+A block size of 768 is really huge!  This will definitely not fit into the
+L1 or L2 cache.  The L2 cache is 256KB, which means you can fit roughly 3 
+(104 x 104) matrices in cache.  So you should be looking at blocks of size
+< 104 if you want to take advantage of cache reuse.
+
+The copy optimization looks promising!  It's interesting that increasing
+the block size reduced performance so much.  Maybe you could try doing
+a multiple block strategy, where you partition the blocks into even smaller
+subblocks.  That way you could maybe combine the performance of the copy
+optimization as well as getting some cache reuse.
+
+I think you are at a very good point for the end of the first week.  I think 
+for future work you should look at tuning your innermost block.  Ideally
+you want to work with really small blocks that can be "vectorized" by the 
+Intel compiler.  You can generate a vectorization report when you compile
+with the flag -vec-report.  See this document for more details: <https://software.intel.com/sites/default/files/m/4/8/8/2/a/31848-CompilerAutovectorizationGuide.pdf>.
+
+
+
